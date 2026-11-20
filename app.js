@@ -55,4 +55,3 @@ next.addEventListener("click", () => { if (state.step < 3) { state.step++; rende
 back.addEventListener("click", () => { if (state.step > 0) { state.step--; render(); } });
 document.querySelector("#resetButton").addEventListener("click", () => { Object.assign(state, { step: 0, activity: "services", tax: "usn", name: "", email: "", phone: "", region: "Москва" }); render(); });
 render();
-
