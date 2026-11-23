@@ -22,12 +22,17 @@ const state = {
   employees: "",
   tax: "income",
   bank: "later",
-  signatureReady: false
+  signatureReady: false,
+  prototypeScreen: "master",
+  clicksEnabled: true,
+  typicalView: true,
+  deviceEnabled: true
 };
 
 const nav = document.querySelector("#workflowNav");
 const screen = document.querySelector("#screen");
 const profileLine = document.querySelector("#profileLine");
+const systemArea = document.querySelector(".system-area");
 
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
@@ -227,6 +232,31 @@ function renderSuccess() {
   </section>`;
 }
 
+function renderLanding() {
+  screen.innerHTML = `<section class="details landing-screen">
+    <h2 class="step-heading">Регистрация бизнеса</h2>
+    <p class="step-copy">Откройте ИП в несколько шагов. Выберите регион, вид деятельности и налоговый режим.</p>
+    <button class="primary-button" type="button" data-action="open-master">Начать регистрацию</button>
+  </section>`;
+}
+
+function renderSystemControls() {
+  systemArea.querySelectorAll("[data-prototype-screen]").forEach(button => {
+    const selected = button.dataset.prototypeScreen === state.prototypeScreen;
+    button.classList.toggle("selected", selected);
+    button.setAttribute("aria-checked", String(selected));
+  });
+  const clicks = systemArea.querySelector('[data-system-toggle="clicks"]');
+  clicks.classList.toggle("selected", state.clicksEnabled);
+  clicks.setAttribute("aria-pressed", String(state.clicksEnabled));
+  const mode = systemArea.querySelector(".prototype-mode");
+  mode.classList.toggle("selected", state.typicalView);
+  mode.setAttribute("aria-pressed", String(state.typicalView));
+  const device = systemArea.querySelector('[data-system-toggle="device"]');
+  device.classList.toggle("selected", state.deviceEnabled);
+  device.setAttribute("aria-pressed", String(state.deviceEnabled));
+}
+
 function validEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
@@ -234,8 +264,13 @@ function validEmail(value) {
 function render() {
   renderNav();
   profileLine.textContent = profileCopy();
-  const screens = [renderPersonal, renderEntity, renderActivities, renderBusinessDetails, renderTax, renderDocuments, renderBank, renderSignature, renderApplication, renderSuccess];
-  screens[state.step]();
+  if (state.prototypeScreen === "landing") {
+    renderLanding();
+  } else {
+    const screens = [renderPersonal, renderEntity, renderActivities, renderBusinessDetails, renderTax, renderDocuments, renderBank, renderSignature, renderApplication, renderSuccess];
+    screens[state.step]();
+  }
+  renderSystemControls();
 }
 
 nav.addEventListener("click", event => {
@@ -256,7 +291,7 @@ screen.addEventListener("click", event => {
     state.step = Math.max(0, state.step - 1);
     render();
   } else if (target.dataset.action === "restart") {
-    Object.assign(state, { step: 0, region: "", email: "", entity: "ИП", selectedActivities: [], activityQuery: "", revenue: "", noEmployees: true, employees: "", tax: "income", bank: "later", signatureReady: false });
+    Object.assign(state, { step: 0, region: "", email: "", entity: "ИП", selectedActivities: [], activityQuery: "", revenue: "", noEmployees: true, employees: "", tax: "income", bank: "later", signatureReady: false, prototypeScreen: "master" });
     render();
   } else if (target.dataset.action === "toggle-regions") {
     const list = document.querySelector("#regionList");
@@ -293,6 +328,33 @@ screen.addEventListener("click", event => {
   } else if (target.dataset.action === "prepare-signature") {
     state.signatureReady = true;
     renderSignature();
+  } else if (target.dataset.action === "open-master") {
+    state.prototypeScreen = "master";
+    state.step = 0;
+    render();
+  }
+});
+
+systemArea.addEventListener("click", event => {
+  const screenButton = event.target.closest("[data-prototype-screen]");
+  if (screenButton) {
+    state.prototypeScreen = screenButton.dataset.prototypeScreen;
+    if (state.prototypeScreen === "master" || state.prototypeScreen === "landing") state.step = 0;
+    if (state.prototypeScreen === "signature") { state.step = 7; state.signatureReady = false; }
+    if (state.prototypeScreen === "work") state.step = 9;
+    render();
+    return;
+  }
+  const toggle = event.target.closest("[data-system-toggle]");
+  if (toggle?.dataset.systemToggle === "clicks") {
+    state.clicksEnabled = !state.clicksEnabled;
+    renderSystemControls();
+  } else if (toggle?.dataset.systemToggle === "device") {
+    state.deviceEnabled = !state.deviceEnabled;
+    renderSystemControls();
+  } else if (event.target.closest(".prototype-mode")) {
+    state.typicalView = !state.typicalView;
+    renderSystemControls();
   }
 });
 

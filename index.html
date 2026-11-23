@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+  <div class="prototype-canvas">
   <main class="app-shell" aria-label="Демонстрационный мастер регистрации бизнеса">
     <aside class="sidebar">
       <a class="brand" href="#" aria-label="Saby — на главную">
@@ -36,6 +37,42 @@
       <button class="rail-button help-button" type="button" aria-label="Помощь">?</button>
     </aside>
   </main>
+  <aside class="system-area" aria-label="Системная область прототипа">
+    <div class="system-top">
+      <div class="device-meta">
+        <div class="device-row">
+          <button class="device-toggle selected" type="button" data-system-toggle="device" aria-label="Формат ноутбука 4:3" aria-pressed="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="13" rx="1.5"></rect><path d="M2.5 19h19l-1.5 2h-16z"></path></svg>
+          </button>
+        </div>
+        <div class="device-label">1024х768&nbsp; ноутбук (4:3)</div>
+      </div>
+      <section class="screen-picker" aria-label="Состояние прототипа">
+        <div class="view-controls">
+          <button class="prototype-mode selected" type="button" aria-pressed="true">
+            <span class="radio-mark" aria-hidden="true"></span>Типовое представление
+          </button>
+          <button class="clicks-toggle selected" type="button" data-system-toggle="clicks" aria-pressed="true">
+            Клики<span class="switch-mark" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="screen-heading">ЭКРАН</div>
+        <div class="screen-options" role="radiogroup" aria-label="Экран прототипа">
+          <button class="screen-option" type="button" role="radio" aria-checked="false" data-prototype-screen="landing"><span class="radio-mark"></span>Лендинг</button>
+          <button class="screen-option selected" type="button" role="radio" aria-checked="true" data-prototype-screen="master"><span class="radio-mark"></span>Начало мастера</button>
+          <button class="screen-option" type="button" role="radio" aria-checked="false" data-prototype-screen="signature"><span class="radio-mark"></span>Выдача подписи</button>
+          <button class="screen-option" type="button" role="radio" aria-checked="false" data-prototype-screen="work"><span class="radio-mark"></span>Начало работы в Saby</button>
+        </div>
+      </section>
+    </div>
+    <section class="system-footer" aria-label="Сведения о прототипе">
+      <div class="footer-status"><span aria-hidden="true">◉</span>Не показывали</div>
+      <div class="system-info-card">Мастер регистрации бизнеса</div>
+      <div class="system-info-card"><span aria-hidden="true">✎</span>Демо-пользователь</div>
+      <div class="system-info-card"><span aria-hidden="true">◎</span>Демо-разработчик</div>
+    </section>
+  </aside>
+  </div>
   <script src="./app.js"></script>
 </body>
 </html>
