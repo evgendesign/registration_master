@@ -56,7 +56,7 @@ function renderNav() {
 }
 
 function profileCopy() {
-  return "Демо-профиль пользователя, +7 (000) 000-00-00";
+  return "Главный Сергей Александрович, +7 (999) 123-45-67";
 }
 
 function actions(nextLabel, disabled = false, backLabel = "Назад") {
@@ -94,13 +94,12 @@ function regionOptions(query = "") {
 
 function renderEntity() {
   const sole = ["вы начинаете бизнес в одиночку", "риски минимальны", "планируется небольшой оборот", "быстро открыть и просто закрыть бизнес", "клиенты — физлица"];
-  const company = ["важна защита личного имущества", "есть партнеры или инвесторы", "бизнес с крупными контрактами", "планируется масштабирование", "клиенты — компании"];
+  const company = ["важна защита личного имущества", "есть партнеры или инвесторы", "бизнес связан с крупными контрактами", "планируется масштабирование", "клиенты — компании"];
   screen.innerHTML = `<section class="details">
     <div class="choice-grid">
       ${entityCard("ИП", sole)}
       ${entityCard("ООО", company)}
     </div>
-    <p class="privacy-note">Для демо мы показываем только общие варианты. Это не юридическая рекомендация.</p>
   </section>${actions("Продолжить")}`;
 }
 
@@ -120,9 +119,8 @@ function renderActivities() {
   screen.innerHTML = `<section class="details">
     <p class="activity-label">Индивидуальный предприниматель</p>
     <div class="chip-list" aria-label="Виды деятельности">${chips}</div>
-    <input class="activity-search" id="activitySearch" type="text" autocomplete="off" placeholder="Выберите выше или напишите, какой бизнес хотите открыть?" value="${escapeHtml(state.activityQuery)}" aria-label="Поиск вида деятельности">
+    <input class="activity-search" id="activitySearch" type="text" autocomplete="off" placeholder="Выберите выше или напишите какой бизнес хотите открыть?" value="${escapeHtml(state.activityQuery)}" aria-label="Поиск вида деятельности">
     <div id="activitySuggestions"></div>
-    ${state.selectedActivities.length ? `<p class="selected-summary">Выбрано: ${state.selectedActivities.map(escapeHtml).join(", ")}</p>` : ""}
   </section>${actions("Продолжить", state.selectedActivities.length === 0)}`;
   renderActivitySuggestions();
 }
@@ -140,9 +138,9 @@ function renderActivitySuggestions() {
 }
 
 function renderBusinessDetails() {
-  const label = state.selectedActivities.join(", ") || "Направление не выбрано";
+  const label = "47.91 – Розничная торговля по почте или по информационно-коммуникационной сети Интернет (основной)";
   screen.innerHTML = `<section class="details">
-    <p class="activity-label">${escapeHtml(state.entity === "ИП" ? "Индивидуальный предприниматель" : "Общество с ограниченной ответственностью")}</p>
+    <p class="activity-label">Индивидуальный предприниматель</p>
     <p class="selected-summary">${escapeHtml(label)}</p>
     <div class="form-row">
       <div class="field-block">
@@ -166,68 +164,57 @@ function taxCard(id, title, details, selected, recommendation = "") {
 }
 
 function renderTax() {
-  const revenue = state.revenue ? `${escapeHtml(state.revenue)} ₽` : "не указана";
+  const revenue = state.revenue ? `${escapeHtml(state.revenue)} ₽` : "";
   screen.innerHTML = `<section class="details">
-    <p class="eyebrow">Выручка ${revenue}, ${state.noEmployees ? "без сотрудников" : "с сотрудниками"}</p>
+    ${revenue ? `<p class="eyebrow">Выручка ${revenue}, ${state.noEmployees ? "без сотрудников" : "с сотрудниками"}</p>` : ""}
     <div class="tax-list">
-      ${taxCard("income", "УСН «Доходы» 6%", ["Налог платится со всех входящих денег, расходы бизнеса не учитываются", "Налог можно уменьшить на страховые взносы"], state.tax === "income", "Рекомендуем")}
-      ${taxCard("income-expenses", "УСН «Доходы − Расходы» 15%", ["Налог платится с разницы между доходами и расходами", "Подтвержденные затраты снижают налоговую базу"], state.tax === "income-expenses")}
+      ${taxCard("income", "УСН «Доходы» 6%", ["Налог платится со всех входящих денег, расходы бизнеса не учитываются", "Налог можно уменьшить на страховые взносы (до 100%)", "менее 60%", "Подробнее"], state.tax === "income", "Рекомендуем")}
+      ${taxCard("income-expenses", "УСН «Доходы – Расходы» 15%", ["Налог платится с разницы между доходами и расходами", "Все затраты снижают налоговую базу, «минимальный налог» (1% от доходов)", "более 60%"], state.tax === "income-expenses")}
     </div>
-    <p class="privacy-note">В макете показаны два варианта УСН. Перед реальной подачей условия нужно проверить для выбранного региона.</p>
   </section>${actions("Продолжить")}`;
 }
 
 function renderDocuments() {
   screen.innerHTML = `<section class="details">
-    <h2 class="step-heading">Документы для регистрации</h2>
-    <p class="step-copy">В настоящем сервисе понадобятся паспорт и СНИЛС для выпуска электронной подписи.</p>
+    <h2 class="step-heading">Отправить заявку</h2>
+    <p class="step-copy">Загрузите скан или фото документов. Они нужны для выдачи электронной подписи</p>
     <div class="document-list">
-      <div class="document-row"><span class="document-icon" aria-hidden="true">▤</span><span><b>Паспорт РФ</b><small>В демо документ не запрашивается</small></span></div>
-      <div class="document-row"><span class="document-icon" aria-hidden="true">▤</span><span><b>СНИЛС</b><small>В демо номер и изображение не вводятся</small></span></div>
+      <div class="document-row"><span><b>Паспорт РФ</b><small>Страница c фото · Страница с пропиской</small></span></div>
+      <div class="document-row"><span><b>СНИЛС</b><small>Лицевая сторона</small></span></div>
+      <div class="document-row"><span><b>ИНН</b></span></div>
     </div>
-    <div class="notice">Макет содержит примеры персональных данных. В этой публикации они скрыты; файлы и номера документов не собираются.</div>
-  </section>${actions("Продолжить")}`;
+  </section>${actions("Отправить заявку")}`;
 }
 
 function renderBank() {
   screen.innerHTML = `<section class="details">
     <h2 class="step-heading">Расчетный счет</h2>
-    <p class="step-copy">Счет не нужен для государственной регистрации ИП. Его можно открыть позже, когда он понадобится бизнесу.</p>
-    <div class="choice-grid">
-      <button class="choice-card ${state.bank === "later" ? "selected" : ""}" type="button" data-bank="later" aria-pressed="${state.bank === "later"}"><span class="choice-head"><span class="radio-dot"></span>Открыть позже</span><span class="choice-points"><span>Продолжить регистрацию без счета</span></span></button>
-      <button class="choice-card ${state.bank === "now" ? "selected" : ""}" type="button" data-bank="now" aria-pressed="${state.bank === "now"}"><span class="choice-head"><span class="radio-dot"></span>Подобрать счет</span><span class="choice-points"><span>В настоящем сервисе можно посмотреть условия банков</span></span></button>
-    </div>
   </section>${actions("Продолжить")}`;
 }
 
 function renderSignature() {
   screen.innerHTML = `<section class="details">
     <h2 class="step-heading">Электронная подпись</h2>
-    <p class="step-copy">Для подачи заявления понадобится электронная подпись. В реальном процессе сервис предложит выбрать удобный способ ее выпуска.</p>
-    <div class="notice">Сейчас показан только демонстрационный переход. Мы не выпускаем подпись и не назначаем встречу.</div>
-    ${state.signatureReady ? `<p class="selected-summary">${state.signatureReady ? "В демо подпись отмечена как подготовленная." : ""}</p>` : ""}
-  </section>${state.signatureReady ? actions("Перейти к заявлению") : `<div class="actions"><button class="secondary-button" type="button" data-action="back">Назад</button><button class="primary-button" type="button" data-action="prepare-signature">Подготовить подпись · демо</button></div>`}`;
+    ${state.signatureReady ? `<p class="step-copy">Выпущена</p><p class="step-copy">Действует с 17.07.2026 по 17.07.2027</p>` : ""}
+  </section>${state.signatureReady ? actions("Продолжить") : `<div class="actions"><button class="secondary-button" type="button" data-action="back">Назад</button><button class="primary-button" type="button" data-action="prepare-signature">Продолжить</button></div>`}`;
 }
 
 function renderApplication() {
   screen.innerHTML = `<section class="details">
-    <h2 class="step-heading">Заявление готово к отправке</h2>
-    <p class="step-copy">Проверьте, что выбрали. Отправка в ФНС в этом прототипе отключена.</p>
+    <h2 class="step-heading">Заявление</h2>
     <div class="summary-list">
-      <div class="summary-item"><span>Регион</span><strong>${escapeHtml(state.region || "Не выбран")}</strong></div>
-      <div class="summary-item"><span>Форма бизнеса</span><strong>${escapeHtml(state.entity)}</strong></div>
-      <div class="summary-item"><span>Деятельность</span><strong>${escapeHtml(state.selectedActivities.join(", ") || "Не выбрана")}</strong></div>
-      <div class="summary-item"><span>Налоговый режим</span><strong>${state.tax === "income" ? "УСН «Доходы» 6%" : "УСН «Доходы − Расходы» 15%"}</strong></div>
+      <div class="summary-item"><span>Регистрация бизнеса</span><strong>Создано</strong></div>
+      <div class="summary-item"><span>Отправка заявления</span><strong>Отправлено</strong></div>
+      <div class="summary-item"><span>Выручка до 2,4 млн ₽, Без сотрудников,</span><strong>УСН Доходы 6%</strong></div>
+      <div class="summary-item"><span>Ответ отрицательный</span><strong>Ответ положительный</strong></div>
     </div>
-    <div class="notice">Кнопка ниже только завершит показ демо. Никакое заявление не будет сформировано или отправлено.</div>
-  </section>${actions("Смоделировать отправку")}`;
+  </section>${actions("Подписать и отправить")}`;
 }
 
 function renderSuccess() {
   screen.innerHTML = `<section class="details success">
     <div class="success-mark" aria-hidden="true">✓</div>
-    <h2>Демо завершено</h2>
-    <p>Вы прошли основные этапы мастера регистрации. Данные не сохранялись и не отправлялись в государственные сервисы.</p>
+    <h2>Ответ положительный</h2>
     <button class="secondary-button" type="button" data-action="restart">Пройти ещё раз</button>
   </section>`;
 }
@@ -235,8 +222,7 @@ function renderSuccess() {
 function renderLanding() {
   screen.innerHTML = `<section class="details landing-screen">
     <h2 class="step-heading">Регистрация бизнеса</h2>
-    <p class="step-copy">Откройте ИП в несколько шагов. Выберите регион, вид деятельности и налоговый режим.</p>
-    <button class="primary-button" type="button" data-action="open-master">Начать регистрацию</button>
+    <button class="primary-button" type="button" data-action="open-master">Продолжить</button>
   </section>`;
 }
 
