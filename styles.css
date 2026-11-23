@@ -97,9 +97,18 @@ button { color: inherit; }
 .details { width: 100%; padding: 0 16px 16px; border-radius: 10px; background: #fff; }
 .personal-details { display: flex; flex-direction: column; gap: 16px; padding-bottom: 16px; }
 .detail-title { margin: 0 0 12px; font-size: 16px; font-weight: 600; line-height: 1.35; }
-.field-block { margin: 0; }
+.field-block { position: relative; margin: 0; }
 .lookup-trigger, .line-input { display: flex; width: 100%; min-height: 48px; align-items: center; padding: 0; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; color: var(--muted); text-align: left; font-size: 18px; letter-spacing: -.25px; outline: none; }
 .lookup-trigger { justify-content: space-between; cursor: pointer; }
+.static-field { cursor: default; user-select: none; }
+.line-input.placeholder { color: var(--muted); }
+.field-clear { padding-left: 6px; color: #c5c7cb; }
+.field-hotspot { position: absolute; z-index: 3; top: 0; left: 0; width: 100%; height: 48px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.click-cue { position: absolute; z-index: 4; display: block; width: 48px; height: 48px; pointer-events: none; }
+.click-halo { position: absolute; top: 7px; left: 7px; width: 28px; height: 28px; border-radius: 50%; background: rgba(83, 203, 204, .48); }
+.click-cue svg { position: absolute; top: 15px; left: 18px; width: 20px; height: 26px; overflow: visible; }
+.click-cue path { fill: #fff; stroke: #101820; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.field-hotspot .click-cue { top: 0; left: 78px; }
 .lookup-trigger img { width: 12px; height: 9px; margin: 0 2px 2px 12px; object-fit: contain; }
 .line-input { color: #111820; }
 .line-input::placeholder { color: var(--muted); opacity: 1; }
@@ -110,21 +119,24 @@ button { color: inherit; }
 .region-search { width: 100%; height: 36px; margin-bottom: 5px; padding: 0 10px; border: 1px solid #dfe3e7; border-radius: 6px; outline-color: var(--blue); font-size: 13px; }
 .region-option { display: block; width: 100%; padding: 9px 10px; border: 0; border-radius: 5px; background: #fff; text-align: left; font-size: 13px; cursor: pointer; }
 .region-option:hover, .region-option:focus-visible { background: #f2f8fe; }
-.primary-button { min-width: 120px; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin: 0; padding: 0 24px; border: 0; border-radius: 100px; background: var(--blue); color: #fff; font-size: 18px; font-weight: 400; cursor: pointer; box-shadow: 0 3px 8px rgba(0,133,242,.18); }
+.primary-button { position: relative; min-width: 120px; height: 48px; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin: 0; padding: 0 24px; border: 0; border-radius: 100px; background: var(--blue); color: #fff; font-size: 18px; font-weight: 400; cursor: pointer; box-shadow: 0 4px 4px rgba(0,0,0,.14); }
+.primary-button .click-cue { top: 0; left: calc(50% - 24px); }
 .primary-button:hover:not(:disabled) { background: #0076d8; }
 .primary-button:disabled { border: 1px solid #e4e4e4; background: #fff; color: #ccc; box-shadow: none; cursor: default; }
 .secondary-button { min-height: 42px; padding: 0 16px; border: 1px solid #d9dde1; border-radius: 100px; background: #fff; color: #59616d; font-size: 14px; cursor: pointer; }
 .actions { display: flex; align-items: center; gap: 10px; margin: 6px 0 0; padding: 0 0 0 16px; }
+.entity-details { padding-bottom: 0; }
+.choice-actions { margin: 12px 0 0; padding-top: 14px; }
 .actions .primary-button { margin-left: 0; }
 .eyebrow { margin: 0 0 12px; color: #505660; font-size: 14px; }
-.choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.choice-card { min-height: 112px; display: block; padding: 12px; border: 1px solid #e3e6e9; border-radius: 8px; background: #fff; text-align: left; cursor: pointer; }
+.choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.choice-card { min-height: 0; display: block; padding: 12px; border: 1px solid #e5e6eb; border-radius: 12px; background: #fff; text-align: left; cursor: pointer; }
 .choice-card:hover, .choice-card.selected { border-color: var(--blue); }
-.choice-head { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; }
-.radio-dot { width: 14px; height: 14px; display: inline-block; border: 1px solid #aab1ba; border-radius: 50%; }
-.choice-card.selected .radio-dot { border: 4px solid var(--blue); }
-.choice-points { display: grid; gap: 5px; margin: 8px 0 0 22px; color: var(--muted); font-size: 12px; line-height: 1.35; }
-.choice-points span::before { content: "—"; padding-right: 6px; }
+.choice-head { display: flex; align-items: center; gap: 8px; color: #333; font-size: 17px; font-weight: 600; line-height: 1.2; letter-spacing: -.24px; }
+.radio-dot { width: 18px; height: 18px; flex: 0 0 18px; display: inline-block; border: 1px solid #8991a9; border-radius: 50%; }
+.choice-points { display: grid; gap: 4px; margin: 8px 0 0; color: var(--muted); font-size: 15px; line-height: 20px; letter-spacing: -.21px; }
+.choice-points span { white-space: nowrap; }
+.choice-points span::before { display: inline-block; width: 18px; margin-right: 8px; font-size: 14px; content: "—"; }
 .activity-label { margin: 0 0 12px; font-size: 16px; font-weight: 500; }
 .chip-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
 .chip { min-height: 30px; padding: 5px 12px; border: 1px solid transparent; border-radius: 18px; background: #f4f4f4; color: #171b20; font-size: 13px; cursor: pointer; }
@@ -165,8 +177,6 @@ button { color: inherit; }
 .rail-status span { position: absolute; right: 2px; bottom: 4px; width: 7px; height: 7px; border: 1px solid white; border-radius: 50%; background: #f47843; }
 .rail-spacer { flex: 1; }
 .rail-button { width: 32px; height: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; border-radius: 50%; background: rgba(51,51,51,.05); color: #515861; font-family: "cbuc-icons", sans-serif; font-size: 16px; font-weight: 400; cursor: default; }
-.rail-icon, .meta-icon { display: block; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-.meta-icon { width: 16px; height: 16px; color: var(--muted); }
 .rail-button.calendar { gap: 0; font-size: 11px; line-height: 1; }
 .rail-button.calendar b { font-family: "Inter", Arial, sans-serif; font-size: 12px; font-weight: 500; }
 .rail-button.calendar small { font-family: "Inter", Arial, sans-serif; font-size: 9px; }

@@ -12,6 +12,7 @@ const regions = ["Ярославль", "Москва", "Санкт-Петерб�
 const activities = ["Розничный магазин", "Интернет-торговля", "Ресторан", "Бьюти-бизнес", "Автосервис", "Гостиничный бизнес", "Образование", "Другие виды"];
 const state = {
   step: 0,
+  personalStage: 0,
   region: "",
   email: "",
   entity: "ИП",
@@ -59,32 +60,36 @@ function profileCopy() {
   return "Главный Сергей Александрович, +7 (999) 123-45-67";
 }
 
-function actions(nextLabel, disabled = false, backLabel = "Назад") {
-  return `<div class="actions">
+function clickCue() {
+  if (!state.clicksEnabled) return "";
+  return `<span class="click-cue" aria-hidden="true"><span class="click-halo"></span><svg viewBox="0 0 20 26"><path d="M2 1.5 17.5 14l-6.2.7 3.3 7.1-3.2 1.5-3.4-7.2-4.2 4.5z"></path></svg></span>`;
+}
+
+function actions(nextLabel, disabled = false, backLabel = "Назад", showClick = false, actionClass = "") {
+  return `<div class="actions ${actionClass}">
     ${state.step > 0 && state.step < 9 ? `<button class="secondary-button" type="button" data-action="back">${backLabel}</button>` : ""}
-    <button class="primary-button" type="button" data-action="next" ${disabled ? "disabled" : ""}>${nextLabel}</button>
+    <button class="primary-button" type="button" data-action="next" ${disabled ? "disabled" : ""}>${nextLabel}${showClick ? clickCue() : ""}</button>
   </div>`;
 }
 
 function renderPersonal() {
-  const menu = state.region ? `<div class="region-list" id="regionList" hidden>
-      <input class="region-search" id="regionSearch" type="search" placeholder="Найти регион" aria-label="Найти регион">
-      <div id="regionOptions">${regionOptions()}</div>
-    </div>` : "";
+  const filled = state.personalStage === 1;
+  const region = filled ? "Ярославль" : "Выберите регион из списка";
+  const email = filled ? "itpremium@gmail.com" : "Укажите электронную почту";
   screen.innerHTML = `<section class="details personal-details" aria-label="Личные данные">
     <div class="field-block region-picker">
-      <button class="lookup-trigger" type="button" data-action="toggle-regions" aria-expanded="false">
-        <span>${state.region ? escapeHtml(state.region) : "Выберите регион из списка"}</span>
+      <div class="lookup-trigger static-field" aria-hidden="true">
+        <span>${region}${filled ? `<span class="field-clear">×</span>` : ""}</span>
         <img src="./assets/lookup.svg" width="12" height="9" alt="">
-      </button>
-      ${menu}
+      </div>
       <p class="helper-text">Определим налоговую для подачи заявления</p>
     </div>
     <div class="field-block">
-      <input class="line-input" id="email" type="email" autocomplete="off" placeholder="Укажите электронную почту" value="${escapeHtml(state.email)}" aria-label="Электронная почта">
+      <div class="line-input static-field ${filled ? "" : "placeholder"}" aria-hidden="true">${email}</div>
+      ${filled ? "" : `<button class="field-hotspot" type="button" data-action="advance-personal" aria-label="Продолжить">${clickCue()}</button>`}
       <p class="helper-text">Пришлем ссылку на эту заявку и ответ ФНС</p>
     </div>
-  </section>${actions("Продолжить", !state.region || !validEmail(state.email))}`;
+  </section>${actions("Продолжить", !filled, "Назад", filled)}`;
 }
 
 function regionOptions(query = "") {
@@ -94,19 +99,19 @@ function regionOptions(query = "") {
 
 function renderEntity() {
   const sole = ["вы начинаете бизнес в одиночку", "риски минимальны", "планируется небольшой оборот", "быстро открыть и просто закрыть бизнес", "клиенты — физлица"];
-  const company = ["важна защита личного имущества", "есть партнеры или инвесторы", "бизнес связан с крупными контрактами", "планируется масштабирование", "клиенты — компании"];
-  screen.innerHTML = `<section class="details">
+  const company = ["важна защита личного имущества", "есть партнеры или инвесторы", "бизнес с крупными контрактами", "планируется масштабирование", "клиенты — компании"];
+  screen.innerHTML = `<section class="details entity-details">
     <div class="choice-grid">
       ${entityCard("ИП", sole)}
       ${entityCard("ООО", company)}
     </div>
-  </section>${actions("Продолжить")}`;
+  </section>${actions("Продолжить", false, "Назад", false, "choice-actions")}`;
 }
 
 function entityCard(name, points) {
   const selected = state.entity === name;
   return `<button class="choice-card ${selected ? "selected" : ""}" type="button" data-entity="${name}" aria-pressed="${selected}">
-    <span class="choice-head"><span class="radio-dot" aria-hidden="true"></span>${name}</span>
+    <span class="choice-head">${selected ? `<img class="radio-icon" src="./assets/entity-selected.svg" width="18" height="18" alt="">` : `<span class="radio-dot" aria-hidden="true"></span>`}${name}</span>
     <span class="choice-points">${points.map(point => `<span>${escapeHtml(point)}</span>`).join("")}</span>
   </button>`;
 }
@@ -263,21 +268,30 @@ nav.addEventListener("click", event => {
   const button = event.target.closest("[data-nav-step]");
   if (!button || button.disabled) return;
   const step = Number(button.dataset.navStep);
-  if (step <= state.step) { state.step = step; render(); }
+  if (step <= state.step) {
+    state.step = step;
+    if (step === 0) state.personalStage = 0;
+    render();
+  }
 });
 
 screen.addEventListener("click", event => {
   const target = event.target.closest("button, [data-region]");
   if (!target) return;
-  if (target.dataset.action === "next") {
-    if (state.step === 0 && (!state.region || !validEmail(state.email))) return;
+  if (target.dataset.action === "advance-personal") {
+    state.personalStage = 1;
+    state.region = "Ярославль";
+    state.email = "itpremium@gmail.com";
+    render();
+  } else if (target.dataset.action === "next") {
+    if (state.step === 0 && state.personalStage !== 1) return;
     if (state.step < 9) state.step++;
     render();
   } else if (target.dataset.action === "back") {
     state.step = Math.max(0, state.step - 1);
     render();
   } else if (target.dataset.action === "restart") {
-    Object.assign(state, { step: 0, region: "", email: "", entity: "ИП", selectedActivities: [], activityQuery: "", revenue: "", noEmployees: true, employees: "", tax: "income", bank: "later", signatureReady: false, prototypeScreen: "master" });
+    Object.assign(state, { step: 0, personalStage: 0, region: "", email: "", entity: "ИП", selectedActivities: [], activityQuery: "", revenue: "", noEmployees: true, employees: "", tax: "income", bank: "later", signatureReady: false, prototypeScreen: "master" });
     render();
   } else if (target.dataset.action === "toggle-regions") {
     const list = document.querySelector("#regionList");
@@ -325,7 +339,10 @@ systemArea.addEventListener("click", event => {
   const screenButton = event.target.closest("[data-prototype-screen]");
   if (screenButton) {
     state.prototypeScreen = screenButton.dataset.prototypeScreen;
-    if (state.prototypeScreen === "master" || state.prototypeScreen === "landing") state.step = 0;
+    if (state.prototypeScreen === "master" || state.prototypeScreen === "landing") {
+      state.step = 0;
+      if (state.prototypeScreen === "master") state.personalStage = 0;
+    }
     if (state.prototypeScreen === "signature") { state.step = 7; state.signatureReady = false; }
     if (state.prototypeScreen === "work") state.step = 9;
     render();
@@ -334,7 +351,7 @@ systemArea.addEventListener("click", event => {
   const toggle = event.target.closest("[data-system-toggle]");
   if (toggle?.dataset.systemToggle === "clicks") {
     state.clicksEnabled = !state.clicksEnabled;
-    renderSystemControls();
+    render();
   } else if (toggle?.dataset.systemToggle === "device") {
     state.deviceEnabled = !state.deviceEnabled;
     renderSystemControls();
