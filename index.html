@@ -3,43 +3,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5f7fa">
-  <title>Регистрация ИП — мастер</title>
+  <meta name="theme-color" content="#ffffff">
+  <title>Регистрация бизнеса — мастер Saby</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Регистрация ИП">
-      <span class="brand-mark">ИП</span><span>Регистрация<br><b>за пару шагов</b></span>
-    </a>
-    <div class="topbar-note"><span class="secure-dot"></span> Черновик сохраняется автоматически</div>
-    <button class="reset-button" id="resetButton" type="button">Начать заново</button>
-  </header>
-
-  <main class="layout">
-    <section class="main-column">
-      <div class="eyebrow"><span class="spark">✳</span> Мастер регистрации ИП</div>
-      <h1>Откройте своё дело<br>без лишней бюрократии</h1>
-      <p class="intro">Ответьте на несколько вопросов — подскажем, что подготовить для регистрации.</p>
-
-      <nav class="stepper" aria-label="Шаги регистрации" id="stepper"></nav>
-      <section class="form-card" id="formCard" aria-live="polite"></section>
-      <div class="form-footer">
-        <button class="back-button" id="backButton" type="button">← Назад</button>
-        <span class="save-note"><span>✓</span> Данные останутся у вас</span>
-        <button class="next-button" id="nextButton" type="button">Продолжить <span>→</span></button>
-      </div>
-      <p class="legal-note">Это демонстрационный прототип. Он не отправляет данные и не подаёт заявление.</p>
-    </section>
-
-    <aside class="side-column">
-      <div class="summary-card">
-        <div class="summary-heading"><span class="summary-icon">✦</span><div><b>Ваш план</b><small>Появится по ходу заполнения</small></div></div>
-        <div id="summaryContent" class="summary-content"></div>
-      </div>
-      <div class="help-card"><div class="help-icon">?</div><div><b>Нужна подсказка?</b><p>Выберите подходящий вариант — мы объясним простыми словами.</p><a href="#help">Как это работает <span>↗</span></a></div></div>
-      <div class="trust-note"><span>◈</span> Регистрация ИП — бесплатно<br><small>Госпошлина не взимается при подаче онлайн</small></div>
+  <main class="app-shell" aria-label="Демонстрационный мастер регистрации бизнеса">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="Saby — на главную">
+        <img src="./assets/bird.svg" width="30" height="40" alt="">
+        <span>saby</span>
+      </a>
+      <nav class="workflow-nav" id="workflowNav" aria-label="Этапы регистрации"></nav>
     </aside>
+
+    <section class="main-view">
+      <header class="page-header">
+        <h1>Регистрация бизнеса</h1>
+        <span class="demo-badge">ДЕМО</span>
+      </header>
+      <div class="workspace">
+        <section class="work-area">
+          <div class="profile-line" id="profileLine"></div>
+          <div class="screen" id="screen" aria-live="polite"></div>
+        </section>
+        <aside class="utility-rail" aria-label="Панель Saby">
+          <div class="rail-status" aria-hidden="true">ГС<span></span></div>
+          <div class="rail-spacer"></div>
+          <button class="rail-button" type="button" aria-label="Информация">▣</button>
+          <button class="rail-button calendar" type="button" aria-label="Календарь"><b>16</b><small>чт</small></button>
+          <button class="rail-button" type="button" aria-label="Звонок">♧</button>
+          <button class="rail-button" type="button" aria-label="Сообщения">▱</button>
+          <button class="rail-button help-button" type="button" aria-label="Помощь">?</button>
+        </aside>
+      </div>
+    </section>
   </main>
   <script src="./app.js"></script>
 </body>
