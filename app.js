@@ -51,7 +51,7 @@ function renderNav() {
 }
 
 function profileCopy() {
-  return state.region ? `Демо-профиль · ${escapeHtml(state.region)} · контактные данные не отправляются` : "Демо-профиль · личные данные не отправляются";
+  return "Демо-профиль пользователя, +7 (000) 000-00-00";
 }
 
 function actions(nextLabel, disabled = false, backLabel = "Назад") {
@@ -66,7 +66,7 @@ function renderPersonal() {
       <input class="region-search" id="regionSearch" type="search" placeholder="Найти регион" aria-label="Найти регион">
       <div id="regionOptions">${regionOptions()}</div>
     </div>` : "";
-  screen.innerHTML = `<section class="details" aria-label="Личные данные">
+  screen.innerHTML = `<section class="details personal-details" aria-label="Личные данные">
     <div class="field-block region-picker">
       <button class="lookup-trigger" type="button" data-action="toggle-regions" aria-expanded="false">
         <span>${state.region ? escapeHtml(state.region) : "Выберите регион из списка"}</span>
@@ -77,9 +77,8 @@ function renderPersonal() {
     </div>
     <div class="field-block">
       <input class="line-input" id="email" type="email" autocomplete="off" placeholder="Укажите электронную почту" value="${escapeHtml(state.email)}" aria-label="Электронная почта">
-      <p class="helper-text">В настоящем сервисе сюда придет ссылка на заявку и ответ ФНС</p>
+      <p class="helper-text">Пришлем ссылку на эту заявку и ответ ФНС</p>
     </div>
-    <p class="privacy-note">В демо данные остаются только в открытой вкладке: мы их не сохраняем и никуда не отправляем.</p>
   </section>${actions("Продолжить", !state.region || !validEmail(state.email))}`;
 }
 
